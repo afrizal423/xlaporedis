@@ -14,10 +14,15 @@ services:
       - pgadmin
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ${APP_PATH}:${DOCUMENT_ROOT}
       - ./docker/nginx/config/default.conf:/etc/nginx/conf.d/default.conf
       - ./docker/nginx/config/nginx.conf:/etc/nginx/nginx.conf
+      # SSL certificates folder (shared with certbot service)
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+      # ACME challenge folder (shared with certbot service)
+      - ./docker/nginx/acme:/var/www/acme:ro
     networks:
       - appnet
 
@@ -62,6 +67,21 @@ services:
       - pgadmin:/var/lib/pgadmin
     networks:
       - appnet
+
+  certbot:
+    build:
+      context: ./docker/nginx/certbot
+      dockerfile: Dockerfile
+    environment:
+      NGINX_SERVICE: reverse-proxy
+    volumes:
+      # SSL certificates folder
+      - ./docker/nginx/ssl:/etc/letsencrypt:rw
+      # ACME challenge folder
+      - ./docker/nginx/acme:/var/www/acme:rw
+      # Docker Unix Socket (allow restarting reverse-proxy service after renewal)
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    restart: unless-stopped
 
 networks:
   appnet:

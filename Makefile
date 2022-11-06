@@ -169,3 +169,53 @@ octane.reload:
 
 # Alias to reload the Octane workers
 or: octane.reload
+
+#-----------------------------------------------------------
+# SSL
+#-----------------------------------------------------------
+
+# Issue SSL certificates according to the environment variables
+ssl.cert:
+	docker-compose -f ${COMPOSE_FILE} run --rm --no-deps \
+		--publish 80:80 \
+		certbot \
+		certbot certonly \
+		--domains ${LETSENCRYPT_DOMAINS} \
+		--email ${LETSENCRYPT_EMAIL} \
+		--agree-tos \
+		--no-eff-email \
+		--standalone
+
+# Issue testing SSL certificates according to the environment variables
+ssl.cert.test:
+	docker-compose -f ${COMPOSE_FILE} run --rm --no-deps \
+		--publish 80:80 \
+		certbot \
+		certbot certonly \
+		--domains ${LETSENCRYPT_DOMAINS} \
+		--email ${LETSENCRYPT_EMAIL} \
+		--agree-tos \
+		--no-eff-email \
+		--standalone \
+		--dry-run
+
+# Issue staging SSL certificates according to the environment variables
+ssl.cert.staging:
+	docker-compose -f ${COMPOSE_FILE} run --rm --no-deps \
+		--publish 80:80 \
+		certbot \
+		certbot certonly \
+		--domains ${LETSENCRYPT_DOMAINS} \
+		--email ${LETSENCRYPT_EMAIL} \
+		--agree-tos \
+		--no-eff-email \
+		--standalone \
+		--staging
+
+# Generate a 2048-bit DH parameter file
+ssl.dh:
+	sudo openssl dhparam -out ./reverse-proxy/prod/ssl/dhparam.pem 2048
+
+# Show the list of registered certificates
+ssl.ls:
+	docker-compose -f ${COMPOSE_FILE} run --rm --entrypoint "certbot certificates" certbot
