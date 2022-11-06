@@ -14,7 +14,16 @@ up:
 
 up.debug:
 	docker-compose -f ${COMPOSE_FILE} up
+
+# start containers
+start:
+	docker-compose -f ${COMPOSE_FILE} start 
+
 # Stop containers
+stop:
+	docker-compose -f ${COMPOSE_FILE} stop 
+
+# Stop and delete containers
 down:
 	docker-compose -f ${COMPOSE_FILE} down --remove-orphans
 

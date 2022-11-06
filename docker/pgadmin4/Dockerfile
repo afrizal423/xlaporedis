@@ -1,0 +1,2 @@
+# Image
+FROM dpage/pgadmin4:6.15
