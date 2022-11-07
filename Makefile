@@ -69,6 +69,13 @@ prune:
 app.bash:
 	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} /bin/bash
 
+app.key.generate:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} php artisan key:generate
+
+# Clear the app cache
+app.cache.clear:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} php artisan optimize:clear
+
 redis.cli:
 	docker-compose -f ${COMPOSE_FILE} exec redis redis-cli
 
@@ -82,10 +89,6 @@ ra: restart.app
 # Run the tinker service
 tinker:
 	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} php artisan tinker
-
-# Clear the app cache
-cache.clear:
-	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} php artisan cache:clear
 
 # Migrate the database
 db.migrate:
@@ -122,6 +125,27 @@ queue.restart:
 # Install composer dependencies
 composer.install:
 	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} composer install
+
+# Update composer dependencies
+# composer.update:
+# 	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} composer update
+
+
+# Install npm dependencies
+npm.install:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} npm install
+
+# Update npm dependencies
+npm.update:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} npm update
+
+# Dev npm
+npm.run.dev:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} npm run dev
+
+# Build Npm
+npm.run.build:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} npm run build
 
 # Install composer dependencies from stopped containers
 r.composer.install:

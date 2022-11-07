@@ -2,6 +2,6 @@
 
 mkdir aplikasi
 
-make build
+make build.all
 
 make up
