@@ -2,6 +2,8 @@
 COMPOSE_FILE = docker-compose.yml
 BASE_IMAGE_DOCKERFILE = ./docker/php/Dockerfile
 NAME_CONTAINER_APP = appnya 
+IMAGE_REGISTRY = xlaporedis
+IMAGE_TAG = latest
 #-----------------------------------------------------------
 # Management
 #-----------------------------------------------------------
@@ -30,7 +32,12 @@ down:
 # Build containers
 build:
 	docker-compose -f ${COMPOSE_FILE} build
+# Build all containers
+build.all: build.base build
 
+# Build the base app image
+build.base:
+	docker build --file ${BASE_IMAGE_DOCKERFILE} --tag ${IMAGE_REGISTRY}/app-base:${IMAGE_TAG} .
 # Show list of running containers
 ps:
 	docker-compose -f ${COMPOSE_FILE} ps
@@ -110,7 +117,7 @@ db.dump:
 
 # Restart the queue process
 queue.restart:
-	docker-compose -f ${COMPOSE_FILE} exec queue php artisan queue:restart
+	docker-compose -f ${COMPOSE_FILE} exec spv php artisan queue:restart
 
 # Install composer dependencies
 composer.install:
