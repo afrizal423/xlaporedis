@@ -41,12 +41,11 @@ RUN apt-get update \
 # Clean up the apt cache
     && rm -rf /var/lib/apt/lists/*
 
+# Copy PHP configuration
+COPY ./docker/base/php.ini "/${PHP_INI_DIR}/php.ini"
+COPY ./docker/base/conf.d "/${PHP_INI_DIR}/conf.d"
+# Set up the working directory
+WORKDIR /var/www/html
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-
-# Copy directory project permission ke container
-COPY --chown=www-data:www-data . /var/www/html
-RUN chown -R www-data:www-data /var/www/html
-
-EXPOSE 9000
-CMD ["php-fpm"]

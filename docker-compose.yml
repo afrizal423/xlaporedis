@@ -24,7 +24,10 @@ services:
   appnya:
     build:
       context: ./
-      dockerfile: ./docker/php/Dockerfile
+      dockerfile: ./docker/app/Dockerfile
+      args:
+        IMAGE_REGISTRY: ${IMAGE_REGISTRY}
+        IMAGE_TAG: ${IMAGE_TAG}
     container_name: appnya
     links:
       - redis
@@ -32,7 +35,6 @@ services:
       - redis
     volumes:
       - ${APP_PATH}:${DOCUMENT_ROOT}
-      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - appnet
     restart: unless-stopped
