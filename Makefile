@@ -62,6 +62,9 @@ prune:
 app.bash:
 	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} /bin/bash
 
+redis.cli:
+	docker-compose -f ${COMPOSE_FILE} exec redis redis-cli
+
 # Restart the app container
 restart.app:
 	docker-compose -f ${COMPOSE_FILE} restart app

@@ -26,11 +26,16 @@ services:
       context: ./
       dockerfile: ./docker/php/Dockerfile
     container_name: appnya
+    links:
+      - redis
+    depends_on:
+      - redis
     volumes:
       - ${APP_PATH}:${DOCUMENT_ROOT}
       - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - appnet
+    restart: unless-stopped
 
   postgres:
     build:
@@ -48,6 +53,7 @@ services:
       - "5432:5432"
     networks:
       - appnet
+    restart: unless-stopped
   
   pgadmin:
     build:
@@ -62,6 +68,19 @@ services:
       - pgadmin:/var/lib/pgadmin
     networks:
       - appnet
+  
+  redis:
+    build:
+      context: ./
+      dockerfile: ./docker/redis/Dockerfile
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+    networks:
+      - appnet
+    restart: unless-stopped
 
 networks:
   appnet:
@@ -72,4 +91,6 @@ volumes:
   postgres:
     driver: local
   pgadmin:
+    driver: local
+  redis:
     driver: local
