@@ -76,6 +76,12 @@ app.key.generate:
 app.cache.clear:
 	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} php artisan optimize:clear
 
+# set to all folder project.
+app.permission: app.permission.storage
+
+app.permission.storage:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}chown -R www-data:www-data /var/www/html/bootstrap/cache /var/www/html/storage 	
+
 redis.cli:
 	docker-compose -f ${COMPOSE_FILE} exec redis redis-cli
 
