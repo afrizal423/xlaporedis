@@ -41,12 +41,26 @@ RUN apt-get update \
 # Clean up the apt cache
     && rm -rf /var/lib/apt/lists/*
 
+# Copy PHP configuration
+COPY ./docker/php/php.ini "/${PHP_INI_DIR}/php.ini"
+COPY ./docker/php/conf.d "/${PHP_INI_DIR}/conf.d"
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
+# Copy project ke dalam container
+COPY ./aplikasi  /var/www/html
+
 # Copy directory project permission ke container
-COPY --chown=www-data:www-data . /var/www/html
+COPY --chown=www-data:www-data ./aplikasi /var/www/html
 RUN chown -R www-data:www-data /var/www/html
+
+# Install composer dependencies
+RUN composer install
+
+RUN npm install
+
+RUN npm run build
 
 EXPOSE 9000
 CMD ["php-fpm"]
