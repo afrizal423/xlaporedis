@@ -10,6 +10,8 @@ RUN apt-get update \
 # Install Curl
     && apt-get install -y libcurl3-dev curl \
     && docker-php-ext-install curl \
+# Install procps (required by Octane)
+    && apt-get install -y procps \
 # Install EXIF
     && docker-php-ext-install exif \
 # Install GD
@@ -38,6 +40,9 @@ RUN apt-get update \
     && docker-php-ext-enable pcntl \
 # Install OPcache extension
     && docker-php-ext-install opcache \
+# Install Swoole (required by Octane)
+    && pecl install swoole \
+    && docker-php-ext-enable swoole \
 # Clean up the apt cache
     && rm -rf /var/lib/apt/lists/*
 
@@ -62,5 +67,6 @@ RUN npm install
 
 RUN npm run build
 
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=9000", "--max-requests=1000"]
+
 EXPOSE 9000
-CMD ["php-fpm"]
