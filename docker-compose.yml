@@ -229,21 +229,21 @@ services:
       - appnet
     restart: unless-stopped
 
-  # spv:
-  #   build:
-  #     context: ./
-  #     dockerfile: ./docker/spv/Dockerfile
-  #     args:
-  #       IMAGE_REGISTRY: ${IMAGE_REGISTRY}
-  #       IMAGE_TAG: ${IMAGE_TAG}
-  #   container_name: spv
-  #   volumes:
-  #     - ${APP_PATH}:${DOCUMENT_ROOT}
-  #   links:
-  #     - postgres
-  #     - redis
-  #   networks:
-  #     - appnet
+  spv:
+    build:
+      context: ./
+      dockerfile: ./docker/spv/Dockerfile
+      args:
+        IMAGE_REGISTRY: ${IMAGE_REGISTRY}
+        IMAGE_TAG: ${IMAGE_TAG}
+    container_name: spv
+    volumes:
+      - ${APP_PATH}:${DOCUMENT_ROOT}
+    links:
+      - postgres
+      - redis
+    networks:
+      - appnet
 
   postgres:
     build:
