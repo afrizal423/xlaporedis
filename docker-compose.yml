@@ -15,6 +15,11 @@ services:
       - appnya3
       - appnya4
       - appnya5
+      - appnya6
+      - appnya7
+      - appnya8
+      - appnya9
+      - appnya10
     ports:
       - "80:80"
     volumes:
@@ -124,21 +129,121 @@ services:
       - appnet
     restart: unless-stopped
 
-  spv:
+  appnya6:
     build:
       context: ./
-      dockerfile: ./docker/spv/Dockerfile
+      dockerfile: ./docker/php/app6/Dockerfile
       args:
         IMAGE_REGISTRY: ${IMAGE_REGISTRY}
         IMAGE_TAG: ${IMAGE_TAG}
-    container_name: spv
-    volumes:
-      - ${APP_PATH}:${DOCUMENT_ROOT}
+    container_name: appnya6
     links:
-      - postgres
+      - postgres 
       - redis
+    depends_on:
+      - redis
+    volumes:
+      - ${APP_PATH}/storage:/var/www/html/storage
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - appnet
+    restart: unless-stopped
+  
+  appnya7:
+    build:
+      context: ./
+      dockerfile: ./docker/php/app7/Dockerfile
+      args:
+        IMAGE_REGISTRY: ${IMAGE_REGISTRY}
+        IMAGE_TAG: ${IMAGE_TAG}
+    container_name: appnya7
+    links:
+      - postgres 
+      - redis
+    depends_on:
+      - redis
+    volumes:
+      - ${APP_PATH}/storage:/var/www/html/storage
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - appnet
+    restart: unless-stopped
+
+  appnya8:
+    build:
+      context: ./
+      dockerfile: ./docker/php/app8/Dockerfile
+      args:
+        IMAGE_REGISTRY: ${IMAGE_REGISTRY}
+        IMAGE_TAG: ${IMAGE_TAG}
+    container_name: appnya8
+    links:
+      - postgres 
+      - redis
+    depends_on:
+      - redis
+    volumes:
+      - ${APP_PATH}/storage:/var/www/html/storage
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - appnet
+    restart: unless-stopped
+
+  appnya9:
+    build:
+      context: ./
+      dockerfile: ./docker/php/app9/Dockerfile
+      args:
+        IMAGE_REGISTRY: ${IMAGE_REGISTRY}
+        IMAGE_TAG: ${IMAGE_TAG}
+    container_name: appnya9
+    links:
+      - postgres 
+      - redis
+    depends_on:
+      - redis
+    volumes:
+      - ${APP_PATH}/storage:/var/www/html/storage
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - appnet
+    restart: unless-stopped
+
+  appnya10:
+    build:
+      context: ./
+      dockerfile: ./docker/php/app10/Dockerfile
+      args:
+        IMAGE_REGISTRY: ${IMAGE_REGISTRY}
+        IMAGE_TAG: ${IMAGE_TAG}
+    container_name: appnya10
+    links:
+      - postgres 
+      - redis
+    depends_on:
+      - redis
+    volumes:
+      - ${APP_PATH}/storage:/var/www/html/storage
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - appnet
+    restart: unless-stopped
+
+  # spv:
+  #   build:
+  #     context: ./
+  #     dockerfile: ./docker/spv/Dockerfile
+  #     args:
+  #       IMAGE_REGISTRY: ${IMAGE_REGISTRY}
+  #       IMAGE_TAG: ${IMAGE_TAG}
+  #   container_name: spv
+  #   volumes:
+  #     - ${APP_PATH}:${DOCUMENT_ROOT}
+  #   links:
+  #     - postgres
+  #     - redis
+  #   networks:
+  #     - appnet
 
   postgres:
     build:
