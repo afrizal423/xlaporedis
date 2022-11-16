@@ -66,7 +66,3 @@ RUN composer install
 RUN npm install
 
 RUN npm run build
-
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=9000", "--max-requests=1000"]
-
-EXPOSE 9000
