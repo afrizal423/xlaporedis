@@ -245,23 +245,91 @@ services:
     networks:
       - appnet
 
-  postgres:
-    build:
-      context: ./
-      dockerfile: ./docker/postgres/Dockerfile
-    container_name: postgres
-    environment:
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - postgres:/var/lib/postgresql/data
-      - ./docker/postgres/dumps/:/tmp
+  pg-0:
+    image: docker.io/bitnami/postgresql-repmgr:14
     ports:
-      - "5432:5432"
+      - 5432
+    volumes:
+      - pg_0_data:/bitnami/postgresql
+    container_name: pg-0
     networks:
       - appnet
-    restart: unless-stopped
+    environment:
+      - POSTGRESQL_POSTGRES_PASSWORD=${DB_ADMIN_PASSWORD}
+      - POSTGRESQL_USERNAME=${DB_USERNAME}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRESQL_DATABASE=${DB_DATABASE}
+      - POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS=2 #jumlah yang ingin di replika
+      - REPMGR_PASSWORD=repmgrpassword
+      - REPMGR_PRIMARY_HOST=pg-0
+      - REPMGR_PARTNER_NODES=pg-2,pg-1,pg-0
+      - REPMGR_NODE_NAME=pg-0
+      - REPMGR_NODE_NETWORK_NAME=pg-0
+  pg-1:
+    image: docker.io/bitnami/postgresql-repmgr:14
+    ports:
+      - 5432
+    volumes:
+      - pg_1_data:/bitnami/postgresql
+    container_name: pg-1
+    networks:
+      - appnet
+    environment:
+      - POSTGRESQL_POSTGRES_PASSWORD=${DB_ADMIN_PASSWORD}
+      - POSTGRESQL_USERNAME=${DB_USERNAME}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRESQL_DATABASE=${DB_DATABASE}
+      - POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS=2
+      - REPMGR_PASSWORD=repmgrpassword
+      - REPMGR_PRIMARY_HOST=pg-0
+      - REPMGR_PARTNER_NODES=pg-0,pg-1,pg-2
+      - REPMGR_NODE_NAME=pg-1
+      - REPMGR_NODE_NETWORK_NAME=pg-1
+  pg-2:
+    image: docker.io/bitnami/postgresql-repmgr:14
+    ports:
+      - 5432
+    volumes:
+      - pg_2_data:/bitnami/postgresql
+    container_name: pg-2
+    networks:
+      - appnet
+    environment:
+      - POSTGRESQL_POSTGRES_PASSWORD=${DB_ADMIN_PASSWORD}
+      - POSTGRESQL_USERNAME=${DB_USERNAME}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRESQL_DATABASE=${DB_DATABASE}
+      - POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS=2 
+      - REPMGR_PASSWORD=repmgrpassword
+      - REPMGR_PRIMARY_HOST=pg-0
+      - REPMGR_PARTNER_NODES=pg-0,pg-1,pg-2
+      - REPMGR_NODE_NAME=pg-2
+      - REPMGR_NODE_NETWORK_NAME=pg-2
+  postgres:
+    image: docker.io/bitnami/pgpool:4
+    ports:
+      - 5432:5432
+    container_name: postgres
+    volumes:
+      - ./docker/postgres/myconf.conf:/config/myconf.conf
+    environment:
+      - PGPOOL_USER_CONF_FILE=/config/myconf.conf
+      - PGPOOL_BACKEND_NODES=0:pg-0:5432,1:pg-1:5432,2:pg-2:5432
+      - PGPOOL_SR_CHECK_USER=${DB_USERNAME}
+      - PGPOOL_SR_CHECK_PASSWORD=${DB_PASSWORD}
+      - PGPOOL_ENABLE_LDAP=no
+      - PGPOOL_POSTGRES_USERNAME=postgres
+      - PGPOOL_POSTGRES_PASSWORD=${DB_ADMIN_PASSWORD}
+      - PGPOOL_ADMIN_USERNAME=admin
+      - PGPOOL_ADMIN_PASSWORD=${DB_ADMIN_PASSWORD}
+      - PGPOOL_ENABLE_LOAD_BALANCING=yes
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   redis:
     build:
@@ -285,4 +353,10 @@ volumes:
   postgres:
     driver: local
   redis:
+    driver: local
+  pg_0_data:
+    driver: local
+  pg_1_data:
+    driver: local
+  pg_2_data:
     driver: local

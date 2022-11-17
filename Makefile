@@ -1,7 +1,7 @@
 # Define default values for variables
 COMPOSE_FILE = docker-compose.yml
 BASE_IMAGE_DOCKERFILE = ./docker/php/Dockerfile
-NAME_CONTAINER_APP = appnya 
+NAME_CONTAINER_APP = appnya1
 IMAGE_REGISTRY = xlaporedis
 IMAGE_TAG = latest
 #-----------------------------------------------------------
