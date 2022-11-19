@@ -8,6 +8,6 @@ FROM ${IMAGE_REGISTRY}/app-base:${IMAGE_TAG}
 # Set up the working directory
 WORKDIR /var/www/html
 
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=9008", "--workers=2", "--max-requests=250"]
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=9008", "--workers=2"]
 
 EXPOSE 9008
