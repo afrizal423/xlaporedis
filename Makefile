@@ -31,7 +31,7 @@ down:
 
 # Build containers
 build.postgres:
-	docker-compose -f ${COMPOSE_FILE} up postgres
+	docker-compose -f ${COMPOSE_FILE} up postgres -d
 
 build:
 	docker-compose -f ${COMPOSE_FILE} build
