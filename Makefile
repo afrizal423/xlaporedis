@@ -30,13 +30,10 @@ down:
 	docker-compose -f ${COMPOSE_FILE} down --remove-orphans
 
 # Build containers
-build.postgres:
-	docker-compose -f ${COMPOSE_FILE} up postgres -d
-
 build:
 	docker-compose -f ${COMPOSE_FILE} build
 # Build all containers
-build.all: build.postgres build.base build
+build.all: build.base build
 
 # Build the base app image
 build.base:
