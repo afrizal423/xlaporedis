@@ -5,12 +5,6 @@ ARG IMAGE_TAG=latest
 # Image
 FROM ${IMAGE_REGISTRY}/app-base:${IMAGE_TAG}
 
-# Install composer dependencies
-RUN composer install
-
-# Dump composer autoload
-RUN composer dump-autoload --optimize
-
 # Set up the working directory
 WORKDIR /var/www/html
 
