@@ -5,6 +5,8 @@ RUN apt-get update \
 # Install Zip
     && apt-get install -y libzip-dev zip unzip \
     && docker-php-ext-install zip \
+# install libre
+    && apt-get install -y --no-install-recommends libreoffice-writer \
 # Install Git
     && apt-get install -y git \
 # Install Curl
@@ -43,8 +45,6 @@ RUN apt-get update \
 # Install Swoole (required by Octane)
     && pecl install swoole \
     && docker-php-ext-enable swoole \
-# install libre
-    && apt-get install -y --no-install-recommends libreoffice-writer \
 # Clean up the apt cache
     && rm -rf /var/lib/apt/lists/*
 
@@ -61,6 +61,9 @@ COPY ./aplikasi  /var/www/html
 # Copy directory project permission ke container
 COPY --chown=www-data:www-data ./aplikasi /var/www/html
 RUN chown -R www-data:www-data /var/www/html
+
+# Dump composer autoload
+RUN composer dump-autoload --optimize
 
 # Install composer dependencies
 RUN composer install
