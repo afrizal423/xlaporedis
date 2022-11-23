@@ -1,7 +1,7 @@
 # Define default values for variables
 COMPOSE_FILE = docker-compose.yml
 BASE_IMAGE_DOCKERFILE = ./docker/php/Dockerfile
-NAME_CONTAINER_APP = appnya 
+NAME_CONTAINER_APP = appnya
 IMAGE_REGISTRY = xlaporedis
 IMAGE_TAG = latest
 #-----------------------------------------------------------
@@ -38,6 +38,42 @@ build.all: build.base build
 # Build the base app image
 build.base:
 	docker build --file ${BASE_IMAGE_DOCKERFILE} --tag ${IMAGE_REGISTRY}/app-base:${IMAGE_TAG} .
+
+# Install composer dependencies
+composer.install:
+	composer.install.1 composer.install.2 composer.install.3 composer.install.4 composer.install.5 composer.install.6 composer.install.7 composer.install.8 composer.install.9 composer.install.10
+
+# composer install all 10 app
+composer.install.1:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}1 composer install
+
+composer.install.2:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}2 composer install
+
+composer.install.3:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}3 composer install
+
+composer.install.4:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}4 composer install
+
+composer.install.5:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}5 composer install
+
+composer.install.6:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}6 composer install
+
+composer.install.7:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}7 composer install
+
+composer.install.8:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}8 composer install
+
+composer.install.9:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}9 composer install
+
+composer.install.10:
+	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP}10 composer install
+
 # Show list of running containers
 ps:
 	docker-compose -f ${COMPOSE_FILE} ps
@@ -128,9 +164,7 @@ db.dump:
 queue.restart:
 	docker-compose -f ${COMPOSE_FILE} exec spv php artisan queue:restart
 
-# Install composer dependencies
-composer.install:
-	docker-compose -f ${COMPOSE_FILE} exec ${NAME_CONTAINER_APP} composer install
+
 
 # Update composer dependencies
 # composer.update:

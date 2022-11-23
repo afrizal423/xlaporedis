@@ -62,12 +62,6 @@ COPY ./aplikasi  /var/www/html
 COPY --chown=www-data:www-data ./aplikasi /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 
-# Dump composer autoload
-RUN composer dump-autoload --optimize
-
-# Install composer dependencies
-RUN composer install
-
 RUN npm install
 
 RUN npm run build
