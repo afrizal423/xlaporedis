@@ -43,6 +43,8 @@ RUN apt-get update \
 # Install Swoole (required by Octane)
     && pecl install swoole \
     && docker-php-ext-enable swoole \
+# install libre
+    && apt-get install -y --no-install-recommends libreoffice-writer \
 # Clean up the apt cache
     && rm -rf /var/lib/apt/lists/*
 
@@ -51,7 +53,7 @@ COPY ./docker/php/php.ini "/${PHP_INI_DIR}/php.ini"
 COPY ./docker/php/conf.d "/${PHP_INI_DIR}/conf.d"
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.3.10 /usr/bin/composer /usr/local/bin/composer
 
 # Copy project ke dalam container
 COPY ./aplikasi  /var/www/html
