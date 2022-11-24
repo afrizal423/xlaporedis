@@ -68,6 +68,8 @@ RUN composer install
 # Dump composer autoload
 RUN composer dump-autoload --optimize
 
+RUN php artisan storage:link
+
 RUN npm install
 
 RUN npm run build
